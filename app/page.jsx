@@ -2,6 +2,8 @@ import Link from 'next/link';
 import { Header } from '../components/header';
 import ossProjects from '../data/oss.json';
 
+export const dynamic = 'force-static';
+
 export default function Page() {
     return (
         <>

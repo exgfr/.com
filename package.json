@@ -6,7 +6,11 @@
         "dev": "next dev",
         "build": "next build",
         "start": "next start",
-        "lint": "next lint"
+        "lint": "next lint",
+        "export": "next build",
+        "preview": "npx serve out",
+        "build:static": "next build && node scripts/strip-javascript.js",
+        "build:extreme": "node scripts/extreme-optimize.js"
     },
     "dependencies": {
         "@netlify/blobs": "^8.2.0",
@@ -17,13 +21,21 @@
         "next": "15.4.2",
         "react": "18.3.1",
         "react-dom": "18.3.1",
+        "remark": "^15.0.1",
+        "remark-html": "^16.0.1",
         "unique-names-generator": "^4.7.1"
     },
     "devDependencies": {
         "@tailwindcss/postcss": "^4.0.15",
+        "cheerio": "^1.1.2",
+        "clean-css": "^5.3.3",
+        "critical": "^7.2.1",
+        "cssnano": "^7.1.0",
         "eslint": "8.57.1",
         "eslint-config-next": "15.4.2",
+        "html-minifier-terser": "^7.2.0",
         "postcss": "^8.4.36",
+        "purgecss": "^7.0.2",
         "tailwindcss": "^4.0.15"
     }
 }

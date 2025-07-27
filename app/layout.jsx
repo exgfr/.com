@@ -1,11 +1,5 @@
 import '../styles/globals.css';
 import { Footer } from '../components/footer';
-import { Geist as GeistSans } from "next/font/google"
-
-const geist = GeistSans({
-  subsets: ["latin"],
-  variable: "--font-geist-sans",
-})
 
 export const metadata = {
     title: {
@@ -16,7 +10,7 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en" className={geist.variable}>
+        <html lang="en">
             <head>
                 <link rel="icon" href="/favicon.svg" sizes="any" />
             </head>

@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Repository Overview
 
-This is a Next.js 14+ (App Router) project deployed on Netlify, showcasing the Netlify Core Primitives (Edge Functions, Image CDN, Blob Store). The website appears to be for "exgfr", a partnership of former Shopify staff building next-generation commerce applications. The site includes information about their mission and open-source projects.
+This is a Next.js 15+ (App Router) project deployed on Netlify as a static site. The website is optimized for "exgfr", a partnership of former Shopify staff building next-generation commerce applications. The site includes information about their mission and open-source projects.
 
 ## Development Commands
 
@@ -19,15 +19,69 @@ npm run dev
 # This is required for edge functions, blob store, etc.
 netlify dev
 
-# Build the application
+# Build the application for static export (with JavaScript)
 npm run build
+
+# Build a JavaScript-free version
+npm run build:static
+
+# Build an extremely optimized version (no JS, optimized CSS, minified HTML)
+npm run build:extreme
 
 # Run linting
 npm run lint
 
-# Start the production server locally
-npm start
+# Preview the static build locally
+npm run preview
 ```
+
+## Optimization Strategy
+
+This site has been optimized for maximum performance using the following techniques:
+
+1. Static HTML export using Next.js with `output: 'export'` in next.config.js
+2. React Server Components (RSC) to render components at build time
+3. Replaced client component libraries with static SVG elements
+4. Pre-renders Markdown content at build time instead of client-side
+5. Inlined SVG icons instead of loading icon libraries
+6. Post-build script that completely removes all JavaScript from the static output
+7. CSS optimization with purging of unused styles and minification
+8. Critical CSS extraction and inlining for above-the-fold content using ESM modules
+9. Extreme HTML minification for the smallest possible file sizes
+
+The site's content is entirely pre-rendered during the build process, and our custom scripts optimize every aspect of the output, resulting in pure HTML and CSS with zero JavaScript footprint for the client.
+
+### Optimization Build Processes
+
+#### Basic JavaScript-Free Build (`build:static`)
+
+The `build:static` script:
+1. Runs the standard Next.js build process
+2. Executes a Node.js script that:
+   - Removes all `<script>` tags from HTML files
+   - Removes all preload links for JavaScript files
+   - Removes the Next.js data script
+   - Deletes all JavaScript files from the output directory
+
+#### Extreme Optimization Build (`build:extreme`)
+
+The `build:extreme` script performs a comprehensive optimization process:
+
+1. Builds the Next.js static site
+2. Strips all JavaScript using the same process as `build:static`
+3. Optimizes CSS:
+   - Purges unused CSS selectors based on HTML content
+   - Minifies CSS using CleanCSS with advanced optimizations
+   - Extracts and inlines critical CSS for above-the-fold content
+   - Configures remaining CSS to load asynchronously
+4. Minifies HTML with extreme settings:
+   - Collapses whitespace and removes comments
+   - Removes attribute quotes and redundant attributes
+   - Minifies inline CSS and URLs
+   - Sorts attributes and class names for better gzip compression
+   - Uses short doctype and collapses boolean attributes
+
+This multi-step optimization process results in the smallest possible file sizes and fastest loading times for a completely static website.
 
 ## Project Architecture
 
@@ -54,7 +108,6 @@ npm start
 ### Styling
 
 - Uses Tailwind CSS for styling
-- Uses the Geist font from Google Fonts
 
 ### Netlify Integration
 
