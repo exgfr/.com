@@ -1,50 +1,52 @@
 import Link from "next/link"
 import { Book, Box, Github, LifeBuoy } from "lucide-react"
-
 import { Header } from '/components/header';
+import ossProjects from '../../../data/oss.json';
+import Markdown from 'markdown-to-jsx';
 
-// In a real app, you'd fetch this data from a CMS, a local file, or an API
-// based on the `params.slug`.
-const projectData = {
-  slug: "pike",
-  name: "Pike",
-  tagline: "A lightweight Elixir library for API key authentication and fine-grained authorization.",
-  githubUrl: "https://github.com/exgfr/pike",
-  docsUrl: "https://hexdocs.pm/pike",
-  packageUrl: "https://hex.pm/packages/pike",
-  keyFeatures: [
-    "Secure, signed API keys with metadata.",
-    "Policy-based authorization for granular control.",
-    "Pluggable architecture for easy integration.",
-    "Minimal dependencies and high performance.",
-  ],
-  readmeContent: `
-    <h3 class="text-xl font-bold">Installation</h3>
-    <p>If you're using Mix, add Pike as a dependency to your <code>mix.exs</code> file:</p>
-    <pre><code class="language-elixir">def deps do
-  [
-    {:pike, "~> 0.1.0"}
-  ]
-end</code></pre>
-    <p>Then, run <code>mix deps.get</code> in your shell to fetch the dependencies.</p>
-    <h3 class="text-xl font-bold mt-6">Quick Start</h3>
-    <p>1. Configure Pike in your <code>config/config.exs</code>:</p>
-    <pre><code class="language-elixir">config :pike,
-  secret: "your-very-long-and-secret-signing-key"</code></pre>
-    <p>2. Create a new API key:</p>
-    <pre><code class="language-elixir">{:ok, key} = Pike.generate_key(%{sub: "user_123", scopes: ["read:data"]})</code></pre>
-    <p>3. Verify a key in your application (e.g., in a Plug middleware):</p>
-    <pre><code class="language-elixir">case Pike.verify(provided_key) do
-  {:ok, claims} -> # Key is valid, proceed
-  {:error, reason} -> # Key is invalid, halt
-end</code></pre>
-  `,
-  license: "MIT",
+// Function to fetch README content from GitHub
+async function fetchReadmeContent(githubUrl) {
+  try {
+    // Extract owner, repo from the GitHub URL
+    // Example: https://github.com/exgfr/pike -> owner: exgfr, repo: pike
+    const urlParts = githubUrl.replace('https://github.com/', '').split('/');
+    const owner = urlParts[0];
+    const repo = urlParts[1];
+    
+    // Construct the raw GitHub URL for the README
+    const readmeUrl = `https://raw.githubusercontent.com/${owner}/${repo}/main/README.md`;
+    
+    // Fetch the README content
+    const response = await fetch(readmeUrl, { next: { revalidate: 86400 } }); // Cache for 24 hours
+    
+    if (!response.ok) {
+      throw new Error(`Failed to fetch README: ${response.status} ${response.statusText}`);
+    }
+    
+    // Return the README content as text
+    return await response.text();
+  } catch (error) {
+    console.error("Error fetching README:", error);
+    return "Failed to load README content.";
+  }
 }
 
-export default function OssProjectPage({ params }) {
-  // You can use params.slug to fetch the correct project data
-  const project = projectData
+export async function generateStaticParams() {
+  return ossProjects.map(project => ({
+    slug: project.slug,
+  }));
+}
+
+export default async function OssProjectPage({ params }) {
+  // Find the project that matches the slug
+  const project = ossProjects.find(p => p.slug === params.slug);
+  
+  if (!project) {
+    return <div>Project not found</div>;
+  }
+  
+  // Fetch README content
+  const readmeContent = await fetchReadmeContent(project.githubUrl);
 
   return (
     <>
@@ -96,10 +98,9 @@ export default function OssProjectPage({ params }) {
 
         <section className="mt-12">
           <h2 className="text-2xl font-bold tracking-tight border-b border-stone-200 pb-2">README</h2>
-          <div
-            className="mt-4 prose prose-stone max-w-none prose-pre:bg-stone-100 prose-pre:text-stone-800 prose-code:before:content-[''] prose-code:after:content-['']"
-            dangerouslySetInnerHTML={{ __html: project.readmeContent }}
-          />
+          <div className="mt-4 prose prose-stone max-w-none prose-pre:bg-stone-100 prose-pre:text-stone-800 prose-code:before:content-[''] prose-code:after:content-['']">
+            <Markdown>{readmeContent}</Markdown>
+          </div>
         </section>
 
         <section className="mt-12">

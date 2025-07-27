@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { Header } from '../components/header';
+import ossProjects from '../data/oss.json';
 
 export default function Page() {
     return (
@@ -20,13 +21,15 @@ export default function Page() {
                 All our OSS is released under the MIT license. Feel free to do as you wish with it.
               </p>
               <ul className="mt-4 space-y-4 text-stone-700">
-                <li>
-                  <Link href="/oss/pike" className="font-semibold underline hover:text-stone-900">
-                    Pike
-                  </Link>
-                  <span className="text-stone-600"> &middot; </span>
-                  <span className="text-stone-600">a lightweight Elixir library for API key authentication and fine-grained authorization.</span>
-                </li>
+                {ossProjects.map((project) => (
+                  <li key={project.slug}>
+                    <Link href={`/oss/${project.slug}`} className="font-semibold underline hover:text-stone-900">
+                      {project.name}
+                    </Link>
+                    <span className="text-stone-600"> &middot; </span>
+                    <span className="text-stone-600">{project.tagline}</span>
+                  </li>
+                ))}
               </ul>
             </section>
         </>
