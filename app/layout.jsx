@@ -1,27 +1,31 @@
 import '../styles/globals.css';
 import { Footer } from '../components/footer';
-import { Header } from '../components/header';
+import { Geist as GeistSans } from "next/font/google"
+
+const geist = GeistSans({
+  subsets: ["latin"],
+  variable: "--font-geist-sans",
+})
 
 export const metadata = {
     title: {
-        template: '%s | Netlify',
-        default: 'Netlify Starter'
+        template: '%s | exgfr',
+        default: 'exgfr - Building the next generation of apps'
     }
 };
 
 export default function RootLayout({ children }) {
     return (
-        <html lang="en">
+        <html lang="en" className={geist.variable}>
             <head>
                 <link rel="icon" href="/favicon.svg" sizes="any" />
             </head>
-            <body className="antialiased text-white bg-blue-900">
-                <div className="flex flex-col min-h-screen px-6 bg-noise sm:px-12">
-                    <div className="flex flex-col w-full max-w-5xl mx-auto grow">
-                        <Header />
-                        <main className="grow">{children}</main>
+            <body>
+                <div className="bg-stone-50 text-stone-900 min-h-screen font-sans">
+                    <main className={`max-w-3xl mx-auto p-8`}>
+                        {children}
                         <Footer />
-                    </div>
+                    </main>
                 </div>
             </body>
         </html>

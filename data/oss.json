@@ -1,0 +1,16 @@
+[
+    {
+        "slug": "pike",
+        "name": "Pike",
+        "tagline": "A lightweight Elixir library for API key authentication and fine-grained authorization.",
+        "githubUrl": "https://github.com/exgfr/pike",
+        "docsUrl": "https://hexdocs.pm/pike",
+        "packageUrl": "https://hex.pm/packages/pike",
+        "keyFeatures": [
+            "API key management",
+            "Policy-based authorization for granular control.",
+            "Pluggable architecture for easy integration.",
+            "Minimal dependencies and high performance."
+        ]
+    }
+]
